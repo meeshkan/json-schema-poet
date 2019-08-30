@@ -66,6 +66,30 @@ test("object yields const schema", () => {
   });
 });
 
+test("type yields correct schema", () => {
+  expect(
+    poet(
+      jsp.type(
+        {
+          foo: jsp.string(),
+          bar: jsp.number()
+        },
+        {
+          baz: jsp.string()
+        }
+      )
+    )
+  ).toEqual({
+    type: "object",
+    properties: {
+      foo: { type: "string" },
+      bar: { type: "number" },
+      baz: { type: "string" }
+    },
+    required: ["foo", "bar"]
+  });
+});
+
 test("object can get stuff from store", () => {
   expect(
     poet(
@@ -106,5 +130,29 @@ test("object can be extended", () => {
       bar: { type: "number" },
       baz: { type: "number", ["x-do-thing"]: 55 }
     }
+  });
+});
+
+test("allOf yields correct schema", () => {
+  expect(poet(jsp.allOf([jsp.string(), jsp.number()]))).toEqual({
+    allOf: [{ type: "string" }, { type: "number" }]
+  });
+});
+
+test("anyOf yields correct schema", () => {
+  expect(poet(jsp.anyOf([jsp.string(), jsp.number()]))).toEqual({
+    anyOf: [{ type: "string" }, { type: "number" }]
+  });
+});
+
+test("oneOf yields correct schema", () => {
+  expect(poet(jsp.oneOf([jsp.string(), jsp.number()]))).toEqual({
+    oneOf: [{ type: "string" }, { type: "number" }]
+  });
+});
+
+test("not yields correct schema", () => {
+  expect(poet(jsp.not(jsp.string()))).toEqual({
+    not: { type: "string" }
   });
 });

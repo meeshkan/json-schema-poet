@@ -8,7 +8,11 @@ import {
   JSFCObject,
   JSONSchemaObject,
   JSFCNull,
-  JSFCConst
+  JSFCConst,
+  JSFCAllOf,
+  JSFCNot,
+  JSFCOneOf,
+  JSFCAnyOf
 } from "json-schema-fast-check/dist/generated/json-schema-strict";
 import * as io from "io-ts";
 
@@ -58,6 +62,10 @@ const JSFCNumberTag: unique symbol = Symbol();
 const JSFCStringTag: unique symbol = Symbol();
 const JSFCRegexTag: unique symbol = Symbol();
 const JSFCBooleanTag: unique symbol = Symbol();
+const JSFCAllOfTag: unique symbol = Symbol();
+const JSFCAnyOfTag: unique symbol = Symbol();
+const JSFCOneOfTag: unique symbol = Symbol();
+const JSFCNotTag: unique symbol = Symbol();
 const JSFCArrayTag: unique symbol = Symbol();
 const JSFCObjectTag: unique symbol = Symbol();
 
@@ -93,6 +101,23 @@ interface JSFCArrayTagged {
   tag: typeof JSFCArrayTag;
   payload: (r: EverythingRec) => JSFCArray;
 }
+interface JSFCAllOfTagged {
+  tag: typeof JSFCAllOfTag;
+  payload: (r: EverythingRec) => JSFCAllOf;
+}
+interface JSFCAnyOfTagged {
+  tag: typeof JSFCAnyOfTag;
+  payload: (r: EverythingRec) => JSFCAnyOf;
+}
+interface JSFCOneOfTagged {
+  tag: typeof JSFCOneOfTag;
+  payload: (r: EverythingRec) => JSFCOneOf;
+}
+interface JSFCNotTagged {
+  tag: typeof JSFCNotTag;
+  payload: (r: EverythingRec) => JSFCNot;
+}
+
 interface JSFCObjectTagged {
   tag: typeof JSFCObjectTag;
   payload: (r: EverythingRec) => JSFCObject;
@@ -109,6 +134,10 @@ type Everything =
   | JSFCBooleanTagged
   | JSFCObjectTagged
   | JSFCArrayTagged
+  | JSFCAllOfTagged
+  | JSFCAnyOfTagged
+  | JSFCOneOfTagged
+  | JSFCNotTagged
   | NeedsTagged
   | ExtendTagged;
 
@@ -144,8 +173,32 @@ export const array = (items: Everything): JSFCArrayTagged => ({
   tag: JSFCArrayTag,
   payload: (r: EverythingRec) => ({ type: "array", items: poet(items, r) })
 });
+export const allOf = (arr: Everything[]): JSFCAllOfTagged => ({
+  tag: JSFCAllOfTag,
+  payload: (r: EverythingRec) => ({ allOf: arr.map(i => poet(i, r)) })
+});
+export const anyOf = (arr: Everything[]): JSFCAnyOfTagged => ({
+  tag: JSFCAnyOfTag,
+  payload: (r: EverythingRec) => ({ anyOf: arr.map(i => poet(i, r)) })
+});
+export const oneOf = (arr: Everything[]): JSFCOneOfTagged => ({
+  tag: JSFCOneOfTag,
+  payload: (r: EverythingRec) => ({ oneOf: arr.map(i => poet(i, r)) })
+});
+export const not = (n: Everything): JSFCNotTagged => ({
+  tag: JSFCNotTag,
+  payload: (r: EverythingRec) => ({ not: poet(n, r) })
+});
+
 export const dictionary = (vals: Everything): JSFCObjectTagged =>
   object({ additionalProperties: vals });
+
+export const type = (
+  req: EverythingRec,
+  opt: EverythingRec
+): JSFCObjectTagged =>
+  object({ properties: { ...req, ...opt }, required: Object.keys(req) });
+
 export const object = (props?: Partial<ObjectProps>): JSFCObjectTagged => ({
   tag: JSFCObjectTag,
   payload: (r: EverythingRec) => ({
@@ -207,13 +260,20 @@ export const extend = (
     <JSONSchemaObject>{ ...poet(what, r), [key]: v }
 });
 
-export const poet = (input: Everything, store?: EverythingRec): JSONSchemaObject =>
+export const poet = (
+  input: Everything,
+  store?: EverythingRec
+): JSONSchemaObject =>
   JSONValue.is(input)
     ? { const: input }
     : input.tag === NeedsTag
     ? poet(input.payload(store || {}), store)
     : input.tag === JSFCObjectTag ||
       input.tag == JSFCArrayTag ||
-      input.tag == ExtendTag
+      input.tag == ExtendTag ||
+      input.tag == JSFCAllOfTag ||
+      input.tag == JSFCAnyOfTag ||
+      input.tag == JSFCOneOfTag ||
+      input.tag == JSFCNotTag
     ? input.payload(store || {})
     : input.payload;
