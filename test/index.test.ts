@@ -1,30 +1,31 @@
-import * as poet from "../src";
+import * as jsp from "../src";
+const { poet } = jsp;
 
 test("number yields number schema", () => {
-  expect(poet.poet(poet.number())).toEqual({ type: "number" });
+  expect(poet(jsp.number())).toEqual({ type: "number" });
 });
 
 test("integer yields number schema", () => {
-  expect(poet.poet(poet.integer())).toEqual({ type: "integer" });
+  expect(poet(jsp.integer())).toEqual({ type: "integer" });
 });
 
 test("string yields string schema", () => {
-  expect(poet.poet(poet.string())).toEqual({ type: "string" });
+  expect(poet(jsp.string())).toEqual({ type: "string" });
 });
 
 test("boolean yields boolean schema", () => {
-  expect(poet.poet(poet.boolean())).toEqual({ type: "boolean" });
+  expect(poet(jsp.boolean())).toEqual({ type: "boolean" });
 });
 
 test("array yields array schema", () => {
-  expect(poet.poet(poet.array(poet.string()))).toEqual({
+  expect(poet(jsp.array(jsp.string()))).toEqual({
     type: "array",
     items: { type: "string" }
   });
 });
 
 test("array yields array schema with const", () => {
-  expect(poet.poet(poet.array("foo"))).toEqual({
+  expect(poet(jsp.array("foo"))).toEqual({
     type: "array",
     items: { const: "foo" }
   });
@@ -32,11 +33,11 @@ test("array yields array schema with const", () => {
 
 test("object yields const schema", () => {
   expect(
-    poet.poet(
-      poet.object({
+    poet(
+      jsp.object({
         properties: {
-          foo: poet.string(),
-          bar: poet.number(),
+          foo: jsp.string(),
+          bar: jsp.number(),
           baz: 55
         }
       })
