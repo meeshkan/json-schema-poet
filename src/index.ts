@@ -30,6 +30,7 @@ interface ObjectProps {
   properties: EverythingRec;
   additionalProperties: boolean | Everything;
   patternProperties: EverythingRec;
+  required: string[];
 }
 
 const JSONPrimitive = io.union([io.number, io.boolean, io.string, io.null]);
@@ -108,7 +109,8 @@ type Everything =
   | JSFCBooleanTagged
   | JSFCObjectTagged
   | JSFCArrayTagged
-  | NeedsTagged;
+  | NeedsTagged
+  | ExtendTagged;
 
 export const nul = (): JSFCNullTagged => ({
   tag: JSFCNullTag,
@@ -142,10 +144,13 @@ export const array = (items: Everything): JSFCArrayTagged => ({
   tag: JSFCArrayTag,
   payload: (r: EverythingRec) => ({ type: "array", items: defunc(items, r) })
 });
+export const dictionary = (vals: Everything): JSFCObjectTagged =>
+  object({ additionalProperties: vals });
 export const object = (props?: Partial<ObjectProps>): JSFCObjectTagged => ({
   tag: JSFCObjectTag,
   payload: (r: EverythingRec) => ({
     type: "object",
+    ...(props && props.required ? { required: props.required } : {}),
     ...(props && props.properties
       ? {
           properties: Object.entries(props.properties)
@@ -187,12 +192,29 @@ export const needs = (what: string): NeedsTagged => ({
   }
 });
 
+const ExtendTag: unique symbol = Symbol();
+interface ExtendTagged {
+  tag: typeof ExtendTag;
+  payload: (store: EverythingRec) => JSONSchemaObject;
+}
+export const extend = (
+  what: Everything,
+  key: string,
+  v: JSONValue
+): ExtendTagged => ({
+  tag: ExtendTag,
+  payload: (r: EverythingRec) =>
+    <JSONSchemaObject>{ ...defunc(what, r), [key]: v }
+});
+
 const defunc = (input: Everything, store?: EverythingRec): JSONSchemaObject =>
   JSONValue.is(input)
     ? { const: input }
     : input.tag === NeedsTag
     ? defunc(input.payload(store || {}), store)
-    : input.tag === JSFCObjectTag || input.tag == JSFCArrayTag
+    : input.tag === JSFCObjectTag ||
+      input.tag == JSFCArrayTag ||
+      input.tag == ExtendTag
     ? input.payload(store || {})
     : input.payload;
 

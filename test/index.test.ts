@@ -38,6 +38,13 @@ test("array yields array schema with const", () => {
   });
 });
 
+test("dictionary yields object with only additionalProperties", () => {
+  expect(poet(jsp.dictionary(jsp.number()))).toEqual({
+    type: "object",
+    additionalProperties: { type: "number" }
+  });
+});
+
 test("object yields const schema", () => {
   expect(
     poet(
@@ -77,6 +84,27 @@ test("object can get stuff from store", () => {
       foo: { type: "string" },
       bar: { type: "number" },
       baz: { const: 55 }
+    }
+  });
+});
+
+test("object can be extended", () => {
+  expect(
+    poet(
+      jsp.object({
+        properties: {
+          foo: jsp.string(),
+          bar: jsp.number(),
+          baz: jsp.extend(jsp.number(), "x-do-thing", 55)
+        }
+      })
+    )
+  ).toEqual({
+    type: "object",
+    properties: {
+      foo: { type: "string" },
+      bar: { type: "number" },
+      baz: { type: "number", ["x-do-thing"]: 55 }
     }
   });
 });
