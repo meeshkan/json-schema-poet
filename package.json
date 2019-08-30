@@ -1,0 +1,28 @@
+{
+  "name": "json-schema-poet",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.2",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.6.2"
+  },
+  "dependencies": {
+    "fp-ts": "^2.0.5",
+    "io-ts": "^2.0.1",
+    "json-schema-fast-check": "^0.0.0"
+  },
+  "scripts": {
+    "lint:fix": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "test": "jest",
+    "prepublish": "yarn compile && yarn lint && yarn test",
+    "test:ci": "yarn run coverage --ci --maxWorkers=2  --reporters=default --reporters=jest-junit",
+    "coverage": "yarn test --coverage",
+    "coverage:upload": "codecov"
+  }
+}
