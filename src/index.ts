@@ -142,7 +142,7 @@ export const boolean = (): JSFCBooleanTagged => ({
 });
 export const array = (items: Everything): JSFCArrayTagged => ({
   tag: JSFCArrayTag,
-  payload: (r: EverythingRec) => ({ type: "array", items: defunc(items, r) })
+  payload: (r: EverythingRec) => ({ type: "array", items: poet(items, r) })
 });
 export const dictionary = (vals: Everything): JSFCObjectTagged =>
   object({ additionalProperties: vals });
@@ -154,14 +154,14 @@ export const object = (props?: Partial<ObjectProps>): JSFCObjectTagged => ({
     ...(props && props.properties
       ? {
           properties: Object.entries(props.properties)
-            .map(([a, b]) => ({ [a]: defunc(b, r) }))
+            .map(([a, b]) => ({ [a]: poet(b, r) }))
             .reduce((a, b) => ({ ...a, ...b }), {})
         }
       : {}),
     ...(props && props.patternProperties
       ? {
           patternProperties: Object.entries(props.patternProperties)
-            .map(([a, b]) => ({ [a]: defunc(b, r) }))
+            .map(([a, b]) => ({ [a]: poet(b, r) }))
             .reduce((a, b) => ({ ...a, ...b }), {})
         }
       : {}),
@@ -170,7 +170,7 @@ export const object = (props?: Partial<ObjectProps>): JSFCObjectTagged => ({
           additionalProperties:
             typeof props.additionalProperties === "boolean"
               ? props.additionalProperties
-              : defunc(props.additionalProperties, r)
+              : poet(props.additionalProperties, r)
         }
       : {})
   })
@@ -204,18 +204,16 @@ export const extend = (
 ): ExtendTagged => ({
   tag: ExtendTag,
   payload: (r: EverythingRec) =>
-    <JSONSchemaObject>{ ...defunc(what, r), [key]: v }
+    <JSONSchemaObject>{ ...poet(what, r), [key]: v }
 });
 
-const defunc = (input: Everything, store?: EverythingRec): JSONSchemaObject =>
+export const poet = (input: Everything, store?: EverythingRec): JSONSchemaObject =>
   JSONValue.is(input)
     ? { const: input }
     : input.tag === NeedsTag
-    ? defunc(input.payload(store || {}), store)
+    ? poet(input.payload(store || {}), store)
     : input.tag === JSFCObjectTag ||
       input.tag == JSFCArrayTag ||
       input.tag == ExtendTag
     ? input.payload(store || {})
     : input.payload;
-
-export const poet = defunc;
