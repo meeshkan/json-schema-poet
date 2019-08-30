@@ -7,9 +7,12 @@ import {
   JSFCArray,
   JSFCObject,
   JSONSchemaObject,
-  JSFCTopLevelBoolean
+  JSFCNull,
+  JSFCConst
 } from "json-schema-fast-check/dist/generated/json-schema-strict";
 import * as io from "io-ts";
+
+type EverythingRec = { [k: string]: Everything };
 
 interface IntProps {
   mininum: number;
@@ -24,13 +27,9 @@ interface NumberProps {
 }
 
 interface ObjectProps {
-  properties: {
-    [k: string]: Everything;
-  };
+  properties: EverythingRec;
   additionalProperties: boolean | Everything;
-  patternProperties: {
-    [k: string]: Everything;
-  };
+  patternProperties: EverythingRec;
 }
 
 const JSONPrimitive = io.union([io.number, io.boolean, io.string, io.null]);
@@ -51,6 +50,8 @@ export type JSONObject = {
 };
 export interface JSONArray extends Array<JSONValue> {}
 
+const JSFCNullTag: unique symbol = Symbol();
+const JSFCConstTag: unique symbol = Symbol();
 const JSFCIntegerTag: unique symbol = Symbol();
 const JSFCNumberTag: unique symbol = Symbol();
 const JSFCStringTag: unique symbol = Symbol();
@@ -59,6 +60,14 @@ const JSFCBooleanTag: unique symbol = Symbol();
 const JSFCArrayTag: unique symbol = Symbol();
 const JSFCObjectTag: unique symbol = Symbol();
 
+interface JSFCNullTagged {
+  tag: typeof JSFCNullTag;
+  payload: JSFCNull;
+}
+interface JSFCConstTagged {
+  tag: typeof JSFCConstTag;
+  payload: JSFCConst;
+}
 interface JSFCIntegerTagged {
   tag: typeof JSFCIntegerTag;
   payload: JSFCInteger;
@@ -81,26 +90,34 @@ interface JSFCStringTagged {
 }
 interface JSFCArrayTagged {
   tag: typeof JSFCArrayTag;
-  payload: JSFCArray;
+  payload: (r: EverythingRec) => JSFCArray;
 }
 interface JSFCObjectTagged {
   tag: typeof JSFCObjectTag;
-  payload: JSFCObject;
+  payload: (r: EverythingRec) => JSFCObject;
 }
-
-const iss = <T>(t: Symbol) => (u: unknown): u is T =>
-  typeof u === "object" && (<any>u).tag === t;
 
 type Everything =
   | JSONValue
+  | JSFCConstTagged
+  | JSFCNullTagged
   | JSFCIntegerTagged
   | JSFCNumberTagged
   | JSFCStringTagged
   | JSFCRegexTagged
   | JSFCBooleanTagged
   | JSFCObjectTagged
-  | JSFCArrayTagged;
+  | JSFCArrayTagged
+  | NeedsTagged;
 
+export const nul = (): JSFCNullTagged => ({
+  tag: JSFCNullTag,
+  payload: { type: "null" }
+});
+export const cnst = (c: JSONValue): JSFCConstTagged => ({
+  tag: JSFCConstTag,
+  payload: { const: c }
+});
 export const integer = (props?: Partial<IntProps>): JSFCIntegerTagged => ({
   tag: JSFCIntegerTag,
   payload: { type: "integer", ...(props || {}) }
@@ -123,18 +140,60 @@ export const boolean = (): JSFCBooleanTagged => ({
 });
 export const array = (items: Everything): JSFCArrayTagged => ({
   tag: JSFCArrayTag,
-  payload: { type: "array", items: defunc(items) }
+  payload: (r: EverythingRec) => ({ type: "array", items: defunc(items, r) })
 });
 export const object = (props?: Partial<ObjectProps>): JSFCObjectTagged => ({
   tag: JSFCObjectTag,
-  payload: {
+  payload: (r: EverythingRec) => ({
     type: "object",
-    properties: Object.entries(props ? props.properties || {} : {})
-      .map(([a, b]) => ({ [a]: defunc(b) }))
-      .reduce((a, b) => ({ ...a, ...b }), {})
+    ...(props && props.properties
+      ? {
+          properties: Object.entries(props.properties)
+            .map(([a, b]) => ({ [a]: defunc(b, r) }))
+            .reduce((a, b) => ({ ...a, ...b }), {})
+        }
+      : {}),
+    ...(props && props.patternProperties
+      ? {
+          patternProperties: Object.entries(props.patternProperties)
+            .map(([a, b]) => ({ [a]: defunc(b, r) }))
+            .reduce((a, b) => ({ ...a, ...b }), {})
+        }
+      : {}),
+    ...(props && props.additionalProperties
+      ? {
+          additionalProperties:
+            typeof props.additionalProperties === "boolean"
+              ? props.additionalProperties
+              : defunc(props.additionalProperties, r)
+        }
+      : {})
+  })
+});
+
+const NeedsTag: unique symbol = Symbol();
+interface NeedsTagged {
+  tag: typeof NeedsTag;
+  payload: (store: EverythingRec) => Everything;
+}
+
+export const needs = (what: string): NeedsTagged => ({
+  tag: NeedsTag,
+  payload: (store: EverythingRec) => {
+    if (store[what] === undefined) {
+      throw Error(`The key ${what} is not in the store.`);
+    }
+    return store[what];
   }
 });
 
-const defunc = (input: Everything) =>
-  JSONValue.is(input) ? { const: input } : input.payload;
+const defunc = (input: Everything, store?: EverythingRec): JSONSchemaObject =>
+  JSONValue.is(input)
+    ? { const: input }
+    : input.tag === NeedsTag
+    ? defunc(input.payload(store || {}), store)
+    : input.tag === JSFCObjectTag || input.tag == JSFCArrayTag
+    ? input.payload(store || {})
+    : input.payload;
+
 export const poet = defunc;

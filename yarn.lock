@@ -2090,10 +2090,10 @@ json-parse-better-errors@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-fast-check@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/json-schema-fast-check/-/json-schema-fast-check-0.0.0.tgz#2acffed9675d3111d5c98e8bad51f93fe8b48c32"
-  integrity sha512-y/kdf/7cgSQsUfue/MkVrNvJ73CsWIVf2MSN8NU892MClvNMPSzRg5VnjkGCBpZL3p8dgCd9uSE7zWit8TNTyA==
+json-schema-fast-check@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/json-schema-fast-check/-/json-schema-fast-check-0.0.1.tgz#efd07641726f9be5c6d4e9406785efeb968b593e"
+  integrity sha512-ckb2X2CQV5Ll2YFg+fUnw0B0MZ4Zsh1pRQHNJ74OvuTNF/Z1hRjdw2730hBU+Ffono+nt+cbXZN6LRa6n3CGpA==
   dependencies:
     faker "^4.1.0"
     fast-check "^1.16.2"

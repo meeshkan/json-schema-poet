@@ -5,6 +5,13 @@ test("number yields number schema", () => {
   expect(poet(jsp.number())).toEqual({ type: "number" });
 });
 
+test("null yields null schema", () => {
+  expect(poet(jsp.nul())).toEqual({ type: "null" });
+});
+
+test("const yields null schema", () => {
+  expect(poet(jsp.cnst({ foo: 1 }))).toEqual({ const: { foo: 1 } });
+});
 test("integer yields number schema", () => {
   expect(poet(jsp.integer())).toEqual({ type: "integer" });
 });
@@ -41,6 +48,28 @@ test("object yields const schema", () => {
           baz: 55
         }
       })
+    )
+  ).toEqual({
+    type: "object",
+    properties: {
+      foo: { type: "string" },
+      bar: { type: "number" },
+      baz: { const: 55 }
+    }
+  });
+});
+
+test("object can get stuff from store", () => {
+  expect(
+    poet(
+      jsp.object({
+        properties: {
+          foo: jsp.string(),
+          bar: jsp.number(),
+          baz: jsp.needs("id")
+        }
+      }),
+      { id: 55 }
     )
   ).toEqual({
     type: "object",
