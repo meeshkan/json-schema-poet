@@ -1,39 +1,97 @@
 import {
-  JSFCInteger,
-  JSFCNumber,
-  JSFCString,
-  JSFCRegex,
-  JSFCBoolean,
-  JSFCArray,
-  JSFCObject,
+  JSSTInteger,
+  JSSTNumber,
+  JSSTString,
+  JSSTRegex,
+  JSSTBoolean,
+  JSSTArray,
+  JSSTObject,
   JSONSchemaObject,
-  JSFCNull,
-  JSFCConst,
-  JSFCAllOf,
-  JSFCNot,
-  JSFCOneOf,
-  JSFCAnyOf
-} from "json-schema-fast-check/dist/generated/json-schema-strict";
+  JSSTNull,
+  JSSTConst,
+  JSSTAllOf,
+  JSSTNot,
+  JSSTOneOf,
+  JSSTAnyOf,
+  JSSTStringEnum,
+  JSSTIntegerEnum,
+  JSSTNumberEnum
+} from "json-schema-strictly-typed";
 import * as io from "io-ts";
 
-type EverythingRec = { [k: string]: Everything };
+type EverythingRec<T> = { [k: string]: Everything<T> };
 
-interface IntProps {
+interface IntPropsWithMinimum {
+  mininum: number;
+  exclusiveMinimum?: boolean;
+  multipleOf?: number;
+}
+
+interface IntPropsWithMaximum {
+  maximum: number;
+  exclusiveMaximum?: boolean;
+  multipleOf?: number;
+}
+
+interface IntPropsWithBounds {
   mininum: number;
   maximum: number;
-  exclusiveMinimum: boolean;
-  exclusiveMaximum: boolean;
+  exclusiveMinimum?: boolean;
+  exclusiveMaximum?: boolean;
+  multipleOf?: number;
 }
+
+interface IntPropsWithExclusiveMinimum {
+  exclusiveMinimum: number;
+  multipleOf?: number;
+}
+
+interface IntPropsWithExclusiveMinimumAndMaximum {
+  maximum: number;
+  exclusiveMinimum: number;
+  exclusiveMaximum?: boolean;
+  multipleOf?: number;
+}
+
+interface IntPropsWithExclusiveMaximum {
+  exclusiveMaximum: number;
+  multipleOf?: number;
+}
+
+interface IntPropsWithExclusiveMaximumAndMinimum {
+  mininum: number;
+  exclusiveMinimum?: boolean;
+  exclusiveMaximum: number;
+  multipleOf?: number;
+}
+
+interface IntPropsWithExclusiveBounds {
+  mininum: number;
+  maximum: number;
+  exclusiveMinimum: number;
+  exclusiveMaximum: number;
+  multipleOf?: number;
+}
+
+type IntProps =
+  | IntPropsWithMinimum
+  | IntPropsWithMaximum
+  | IntPropsWithBounds
+  | IntPropsWithExclusiveMinimum
+  | IntPropsWithExclusiveMinimumAndMaximum
+  | IntPropsWithExclusiveMaximum
+  | IntPropsWithExclusiveMaximumAndMinimum
+  | IntPropsWithExclusiveBounds;
 
 interface NumberProps {
   mininum: number;
   maximum: number;
 }
 
-interface ObjectProps {
-  properties: EverythingRec;
-  additionalProperties: boolean | Everything;
-  patternProperties: EverythingRec;
+interface ObjectProps<T> {
+  properties: EverythingRec<T>;
+  additionalProperties: boolean | Everything<T>;
+  patternProperties: EverythingRec<T>;
   required: string[];
 }
 
@@ -55,166 +113,193 @@ export type JSONObject = {
 };
 export interface JSONArray extends Array<JSONValue> {}
 
-const JSFCNullTag: unique symbol = Symbol();
-const JSFCConstTag: unique symbol = Symbol();
-const JSFCIntegerTag: unique symbol = Symbol();
-const JSFCNumberTag: unique symbol = Symbol();
-const JSFCStringTag: unique symbol = Symbol();
-const JSFCRegexTag: unique symbol = Symbol();
-const JSFCBooleanTag: unique symbol = Symbol();
-const JSFCAllOfTag: unique symbol = Symbol();
-const JSFCAnyOfTag: unique symbol = Symbol();
-const JSFCOneOfTag: unique symbol = Symbol();
-const JSFCNotTag: unique symbol = Symbol();
-const JSFCArrayTag: unique symbol = Symbol();
-const JSFCObjectTag: unique symbol = Symbol();
+const JSSTNullTag: unique symbol = Symbol();
+const JSSTConstTag: unique symbol = Symbol();
+const JSSTIntegerTag: unique symbol = Symbol();
+const JSSTNumberTag: unique symbol = Symbol();
+const JSSTStringTag: unique symbol = Symbol();
+const JSSTStringEnumTag: unique symbol = Symbol();
+const JSSTNumberEnumTag: unique symbol = Symbol();
+const JSSTIntegerEnumTag: unique symbol = Symbol();
+const JSSTRegexTag: unique symbol = Symbol();
+const JSSTBooleanTag: unique symbol = Symbol();
+const JSSTAllOfTag: unique symbol = Symbol();
+const JSSTAnyOfTag: unique symbol = Symbol();
+const JSSTOneOfTag: unique symbol = Symbol();
+const JSSTNotTag: unique symbol = Symbol();
+const JSSTArrayTag: unique symbol = Symbol();
+const JSSTObjectTag: unique symbol = Symbol();
 
-interface JSFCNullTagged {
-  tag: typeof JSFCNullTag;
-  payload: JSFCNull;
+interface JSSTNullTagged {
+  tag: typeof JSSTNullTag;
+  payload: JSSTNull;
 }
-interface JSFCConstTagged {
-  tag: typeof JSFCConstTag;
-  payload: JSFCConst;
+interface JSSTConstTagged {
+  tag: typeof JSSTConstTag;
+  payload: JSSTConst;
 }
-interface JSFCIntegerTagged {
-  tag: typeof JSFCIntegerTag;
-  payload: JSFCInteger;
+interface JSSTIntegerTagged {
+  tag: typeof JSSTIntegerTag;
+  payload: JSSTInteger;
 }
-interface JSFCNumberTagged {
-  tag: typeof JSFCNumberTag;
-  payload: JSFCNumber;
+interface JSSTNumberTagged {
+  tag: typeof JSSTNumberTag;
+  payload: JSSTNumber;
 }
-interface JSFCBooleanTagged {
-  tag: typeof JSFCBooleanTag;
-  payload: JSFCBoolean;
+interface JSSTBooleanTagged {
+  tag: typeof JSSTBooleanTag;
+  payload: JSSTBoolean;
 }
-interface JSFCRegexTagged {
-  tag: typeof JSFCRegexTag;
-  payload: JSFCRegex;
+interface JSSTRegexTagged {
+  tag: typeof JSSTRegexTag;
+  payload: JSSTRegex;
 }
-interface JSFCStringTagged {
-  tag: typeof JSFCStringTag;
-  payload: JSFCString;
+interface JSSTStringTagged {
+  tag: typeof JSSTStringTag;
+  payload: JSSTString;
 }
-interface JSFCArrayTagged {
-  tag: typeof JSFCArrayTag;
-  payload: (r: EverythingRec) => JSFCArray;
+interface JSSTStringEnumTagged {
+  tag: typeof JSSTStringEnumTag;
+  payload: JSSTStringEnum;
 }
-interface JSFCAllOfTagged {
-  tag: typeof JSFCAllOfTag;
-  payload: (r: EverythingRec) => JSFCAllOf;
+interface JSSTNumberEnumTagged {
+  tag: typeof JSSTNumberEnumTag;
+  payload: JSSTNumberEnum;
 }
-interface JSFCAnyOfTagged {
-  tag: typeof JSFCAnyOfTag;
-  payload: (r: EverythingRec) => JSFCAnyOf;
+interface JSSTIntegerEnumTagged {
+  tag: typeof JSSTIntegerEnumTag;
+  payload: JSSTIntegerEnum;
 }
-interface JSFCOneOfTagged {
-  tag: typeof JSFCOneOfTag;
-  payload: (r: EverythingRec) => JSFCOneOf;
+interface JSSTArrayTagged<T> {
+  tag: typeof JSSTArrayTag;
+  payload: (t?: T) => JSSTArray;
 }
-interface JSFCNotTagged {
-  tag: typeof JSFCNotTag;
-  payload: (r: EverythingRec) => JSFCNot;
+interface JSSTAllOfTagged<T> {
+  tag: typeof JSSTAllOfTag;
+  payload: (t?: T) => JSSTAllOf;
+}
+interface JSSTAnyOfTagged<T> {
+  tag: typeof JSSTAnyOfTag;
+  payload: (t?: T) => JSSTAnyOf;
+}
+interface JSSTOneOfTagged<T> {
+  tag: typeof JSSTOneOfTag;
+  payload: (t?: T) => JSSTOneOf;
+}
+interface JSSTNotTagged<T> {
+  tag: typeof JSSTNotTag;
+  payload: (t?: T) => JSSTNot;
 }
 
-interface JSFCObjectTagged {
-  tag: typeof JSFCObjectTag;
-  payload: (r: EverythingRec) => JSFCObject;
+interface JSSTObjectTagged<T> {
+  tag: typeof JSSTObjectTag;
+  payload: (t?: T) => JSSTObject;
 }
 
-type Everything =
+type Everything<T> =
   | JSONValue
-  | JSFCConstTagged
-  | JSFCNullTagged
-  | JSFCIntegerTagged
-  | JSFCNumberTagged
-  | JSFCStringTagged
-  | JSFCRegexTagged
-  | JSFCBooleanTagged
-  | JSFCObjectTagged
-  | JSFCArrayTagged
-  | JSFCAllOfTagged
-  | JSFCAnyOfTagged
-  | JSFCOneOfTagged
-  | JSFCNotTagged
-  | NeedsTagged
-  | ExtendTagged;
+  | JSSTConstTagged
+  | JSSTNullTagged
+  | JSSTIntegerTagged
+  | JSSTNumberTagged
+  | JSSTStringTagged
+  | JSSTRegexTagged
+  | JSSTBooleanTagged
+  | JSSTObjectTagged<T>
+  | JSSTArrayTagged<T>
+  | JSSTAllOfTagged<T>
+  | JSSTAnyOfTagged<T>
+  | JSSTOneOfTagged<T>
+  | JSSTNotTagged<T>
+  | NeedsTagged<T>
+  | ExtendTagged<T>;
 
-export const nul = (): JSFCNullTagged => ({
-  tag: JSFCNullTag,
+export const nul = (): JSSTNullTagged => ({
+  tag: JSSTNullTag,
   payload: { type: "null" }
 });
-export const cnst = (c: JSONValue): JSFCConstTagged => ({
-  tag: JSFCConstTag,
+export const cnst = (c: JSONValue): JSSTConstTagged => ({
+  tag: JSSTConstTag,
   payload: { const: c }
 });
-export const integer = (props?: Partial<IntProps>): JSFCIntegerTagged => ({
-  tag: JSFCIntegerTag,
+export const integer = (props?: IntProps): JSSTIntegerTagged => ({
+  tag: JSSTIntegerTag,
   payload: { type: "integer", ...(props || {}) }
 });
-export const number = (props?: Partial<NumberProps>): JSFCNumberTagged => ({
-  tag: JSFCNumberTag,
+export const number = (props?: Partial<NumberProps>): JSSTNumberTagged => ({
+  tag: JSSTNumberTag,
   payload: { type: "number", ...(props || {}) }
 });
-export const string = (): JSFCStringTagged => ({
-  tag: JSFCStringTag,
+export const string = (): JSSTStringTagged => ({
+  tag: JSSTStringTag,
   payload: { type: "string" }
 });
-export const regex = (pattern: string): JSFCRegexTagged => ({
-  tag: JSFCRegexTag,
+export const stringEnum = (enu: string[]): JSSTStringEnumTagged => ({
+  tag: JSSTStringEnumTag,
+  payload: { type: "string", enum: enu }
+});
+export const numberEnum = (enu: number[]): JSSTNumberEnumTagged => ({
+  tag: JSSTNumberEnumTag,
+  payload: { type: "number", enum: enu }
+});
+export const integerEnum = (enu: number[]): JSSTIntegerEnumTagged => ({
+  tag: JSSTIntegerEnumTag,
+  payload: { type: "integer", enum: enu }
+});
+export const regex = (pattern: string): JSSTRegexTagged => ({
+  tag: JSSTRegexTag,
   payload: { type: "string", pattern }
 });
-export const boolean = (): JSFCBooleanTagged => ({
-  tag: JSFCBooleanTag,
+export const boolean = (): JSSTBooleanTagged => ({
+  tag: JSSTBooleanTag,
   payload: { type: "boolean" }
 });
-export const array = (items: Everything): JSFCArrayTagged => ({
-  tag: JSFCArrayTag,
-  payload: (r: EverythingRec) => ({ type: "array", items: poet(items, r) })
+export const array = <T>(items: Everything<T>): JSSTArrayTagged<T> => ({
+  tag: JSSTArrayTag,
+  payload: (t?: T) => ({ type: "array", items: poet(items, t) })
 });
-export const allOf = (arr: Everything[]): JSFCAllOfTagged => ({
-  tag: JSFCAllOfTag,
-  payload: (r: EverythingRec) => ({ allOf: arr.map(i => poet(i, r)) })
+export const allOf = <T>(arr: Everything<T>[]): JSSTAllOfTagged<T> => ({
+  tag: JSSTAllOfTag,
+  payload: (t?: T) => ({ allOf: arr.map(i => poet(i, t)) })
 });
-export const anyOf = (arr: Everything[]): JSFCAnyOfTagged => ({
-  tag: JSFCAnyOfTag,
-  payload: (r: EverythingRec) => ({ anyOf: arr.map(i => poet(i, r)) })
+export const anyOf = <T>(arr: Everything<T>[]): JSSTAnyOfTagged<T> => ({
+  tag: JSSTAnyOfTag,
+  payload: (t?: T) => ({ anyOf: arr.map(i => poet(i, t)) })
 });
-export const oneOf = (arr: Everything[]): JSFCOneOfTagged => ({
-  tag: JSFCOneOfTag,
-  payload: (r: EverythingRec) => ({ oneOf: arr.map(i => poet(i, r)) })
+export const oneOf = <T>(arr: Everything<T>[]): JSSTOneOfTagged<T> => ({
+  tag: JSSTOneOfTag,
+  payload: (t?: T) => ({ oneOf: arr.map(i => poet(i, t)) })
 });
-export const not = (n: Everything): JSFCNotTagged => ({
-  tag: JSFCNotTag,
-  payload: (r: EverythingRec) => ({ not: poet(n, r) })
+export const not = <T>(n: Everything<T>): JSSTNotTagged<T> => ({
+  tag: JSSTNotTag,
+  payload: (t?: T) => ({ not: poet(n, t) })
 });
 
-export const dictionary = (vals: Everything): JSFCObjectTagged =>
+export const dictionary = <T>(vals: Everything<T>): JSSTObjectTagged<T> =>
   object({ additionalProperties: vals });
 
-export const type = (
-  req: EverythingRec,
-  opt: EverythingRec
-): JSFCObjectTagged =>
+export const type = <T>(
+  req: EverythingRec<T>,
+  opt: EverythingRec<T>
+): JSSTObjectTagged<T> =>
   object({ properties: { ...req, ...opt }, required: Object.keys(req) });
 
-export const object = (props?: Partial<ObjectProps>): JSFCObjectTagged => ({
-  tag: JSFCObjectTag,
-  payload: (r: EverythingRec) => ({
+export const object = <T>(props?: Partial<ObjectProps<T>>): JSSTObjectTagged<T> => ({
+  tag: JSSTObjectTag,
+  payload: (t?: T) => ({
     type: "object",
     ...(props && props.required ? { required: props.required } : {}),
     ...(props && props.properties
       ? {
           properties: Object.entries(props.properties)
-            .map(([a, b]) => ({ [a]: poet(b, r) }))
+            .map(([a, b]) => ({ [a]: poet(b, t) }))
             .reduce((a, b) => ({ ...a, ...b }), {})
         }
       : {}),
     ...(props && props.patternProperties
       ? {
           patternProperties: Object.entries(props.patternProperties)
-            .map(([a, b]) => ({ [a]: poet(b, r) }))
+            .map(([a, b]) => ({ [a]: poet(b, t) }))
             .reduce((a, b) => ({ ...a, ...b }), {})
         }
       : {}),
@@ -223,57 +308,52 @@ export const object = (props?: Partial<ObjectProps>): JSFCObjectTagged => ({
           additionalProperties:
             typeof props.additionalProperties === "boolean"
               ? props.additionalProperties
-              : poet(props.additionalProperties, r)
+              : poet(props.additionalProperties, t)
         }
       : {})
   })
 });
 
 const NeedsTag: unique symbol = Symbol();
-interface NeedsTagged {
+interface NeedsTagged<T> {
   tag: typeof NeedsTag;
-  payload: (store: EverythingRec) => Everything;
+  payload: (t?: T) => Everything<T>;
 }
 
-export const needs = (what: string): NeedsTagged => ({
+export const needs = <T>(what: (t?: T) => Everything<T>): NeedsTagged<T> => ({
   tag: NeedsTag,
-  payload: (store: EverythingRec) => {
-    if (store[what] === undefined) {
-      throw Error(`The key ${what} is not in the store.`);
-    }
-    return store[what];
-  }
+  payload: (t?: T) => what(t)
 });
 
 const ExtendTag: unique symbol = Symbol();
-interface ExtendTagged {
+interface ExtendTagged<T> {
   tag: typeof ExtendTag;
-  payload: (store: EverythingRec) => JSONSchemaObject;
+  payload: (t?: T) => JSONSchemaObject;
 }
-export const extend = (
-  what: Everything,
+export const extend = <T>(
+  what: Everything<T>,
   key: string,
   v: JSONValue
-): ExtendTagged => ({
+): ExtendTagged<T> => ({
   tag: ExtendTag,
-  payload: (r: EverythingRec) =>
-    <JSONSchemaObject>{ ...poet(what, r), [key]: v }
+  payload: (t?: T) =>
+    <JSONSchemaObject>{ ...poet(what, t), [key]: v }
 });
 
-export const poet = (
-  input: Everything,
-  store?: EverythingRec
+export const poet = <T>(
+  input: Everything<T>,
+  t?: T
 ): JSONSchemaObject =>
   JSONValue.is(input)
     ? { const: input }
     : input.tag === NeedsTag
-    ? poet(input.payload(store || {}), store)
-    : input.tag === JSFCObjectTag ||
-      input.tag == JSFCArrayTag ||
+    ? poet(input.payload(t), t)
+    : input.tag === JSSTObjectTag ||
+      input.tag == JSSTArrayTag ||
       input.tag == ExtendTag ||
-      input.tag == JSFCAllOfTag ||
-      input.tag == JSFCAnyOfTag ||
-      input.tag == JSFCOneOfTag ||
-      input.tag == JSFCNotTag
-    ? input.payload(store || {})
+      input.tag == JSSTAllOfTag ||
+      input.tag == JSSTAnyOfTag ||
+      input.tag == JSSTOneOfTag ||
+      input.tag == JSSTNotTag
+    ? input.payload(t)
     : input.payload;

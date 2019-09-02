@@ -14,7 +14,7 @@
   "dependencies": {
     "fp-ts": "^2.0.5",
     "io-ts": "^2.0.1",
-    "json-schema-fast-check": "^0.0.1"
+    "json-schema-strictly-typed": "^0.0.4"
   },
   "scripts": {
     "lint:fix": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
