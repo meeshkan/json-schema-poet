@@ -111,28 +111,27 @@ test("object can get stuff from store", () => {
   });
 });
 
-
 test("object can get stuff from store with type", () => {
-    expect(
-      poet(
-        jsp.object({
-          properties: {
-            foo: jsp.string(),
-            bar: jsp.number(),
-            baz: jsp.needs((s?: string) => s ? s.toUpperCase(): "BAR")
-          }
-        }),
-        "foo"
-      )
-    ).toEqual({
-      type: "object",
-      properties: {
-        foo: { type: "string" },
-        bar: { type: "number" },
-        baz: { const: "FOO" }
-      }
-    });
+  expect(
+    poet(
+      jsp.object({
+        properties: {
+          foo: jsp.string(),
+          bar: jsp.number(),
+          baz: jsp.needs((s?: string) => (s ? s.toUpperCase() : "BAR"))
+        }
+      }),
+      "foo"
+    )
+  ).toEqual({
+    type: "object",
+    properties: {
+      foo: { type: "string" },
+      bar: { type: "number" },
+      baz: { const: "FOO" }
+    }
   });
+});
 
 test("object can be extended", () => {
   expect(

@@ -284,7 +284,9 @@ export const type = <T>(
 ): JSSTObjectTagged<T> =>
   object({ properties: { ...req, ...opt }, required: Object.keys(req) });
 
-export const object = <T>(props?: Partial<ObjectProps<T>>): JSSTObjectTagged<T> => ({
+export const object = <T>(
+  props?: Partial<ObjectProps<T>>
+): JSSTObjectTagged<T> => ({
   tag: JSSTObjectTag,
   payload: (t?: T) => ({
     type: "object",
@@ -336,14 +338,10 @@ export const extend = <T>(
   v: JSONValue
 ): ExtendTagged<T> => ({
   tag: ExtendTag,
-  payload: (t?: T) =>
-    <JSONSchemaObject>{ ...poet(what, t), [key]: v }
+  payload: (t?: T) => <JSONSchemaObject>{ ...poet(what, t), [key]: v }
 });
 
-export const poet = <T>(
-  input: Everything<T>,
-  t?: T
-): JSONSchemaObject =>
+export const poet = <T>(input: Everything<T>, t?: T): JSONSchemaObject =>
   JSONValue.is(input)
     ? { const: input }
     : input.tag === NeedsTag
