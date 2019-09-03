@@ -172,7 +172,7 @@ export const object = <T>(props?: Partial<ObjectProps<T>>): JSSTObject<T> => ({
   ...(props && props.patternProperties
     ? {
         patternProperties: Object.entries(props.patternProperties)
-          .map(([a, b]) => ({ [a]:b }))
+          .map(([a, b]) => ({ [a]: b }))
           .reduce((a, b) => ({ ...a, ...b }), {})
       }
     : {}),

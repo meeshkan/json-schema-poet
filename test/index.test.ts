@@ -46,15 +46,14 @@ test("dictionary yields object with only additionalProperties", () => {
 
 test("object yields const schema", () => {
   expect(
-      jsp.object({
-        properties: {
-          foo: jsp.string(),
-          bar: jsp.number(),
-          baz: jsp.cnst(55)
-        }
-      })
-    )
-  .toEqual({
+    jsp.object({
+      properties: {
+        foo: jsp.string(),
+        bar: jsp.number(),
+        baz: jsp.cnst(55)
+      }
+    })
+  ).toEqual({
     type: "object",
     properties: {
       foo: { type: "string" },
@@ -66,17 +65,15 @@ test("object yields const schema", () => {
 
 test("type yields correct schema", () => {
   expect(
-    
-      jsp.type(
-        {
-          foo: jsp.string(),
-          bar: jsp.number()
-        },
-        {
-          baz: jsp.string()
-        }
-      )
-    
+    jsp.type(
+      {
+        foo: jsp.string(),
+        bar: jsp.number()
+      },
+      {
+        baz: jsp.string()
+      }
+    )
   ).toEqual({
     type: "object",
     properties: {
@@ -89,17 +86,15 @@ test("type yields correct schema", () => {
 });
 
 test("object can be extended", () => {
-    const d = new Date()
+  const d = new Date();
   expect(
-    
-      jsp.object<Date>({
-        properties: {
-          foo: jsp.string(),
-          bar: jsp.number(),
-          baz: d
-        }
-      })
-    
+    jsp.object<Date>({
+      properties: {
+        foo: jsp.string(),
+        bar: jsp.number(),
+        baz: d
+      }
+    })
   ).toEqual({
     type: "object",
     properties: {
@@ -112,15 +107,13 @@ test("object can be extended", () => {
 
 test("object can be extended", () => {
   expect(
-    
-      jsp.object({
-        properties: {
-          foo: jsp.string(),
-          bar: jsp.number(),
-          baz: jsp.extend(jsp.number(), "x-do-thing", 55)
-        }
-      })
-    
+    jsp.object({
+      properties: {
+        foo: jsp.string(),
+        bar: jsp.number(),
+        baz: jsp.extend(jsp.number(), "x-do-thing", 55)
+      }
+    })
   ).toEqual({
     type: "object",
     properties: {
