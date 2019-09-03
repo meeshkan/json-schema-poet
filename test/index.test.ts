@@ -19,6 +19,7 @@ test("string yields string schema", () => {
   expect(jsp.string()).toEqual({ type: "string" });
 });
 
+// This is purely random request
 test("boolean yields boolean schema", () => {
   expect(jsp.boolean()).toEqual({ type: "boolean" });
 });
