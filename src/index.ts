@@ -26,7 +26,7 @@ type Everything<T> = JSSTAnything<T>;
 type EverythingRec<T> = { [k: string]: Everything<T> };
 
 interface IntPropsWithMinimum {
-  mininum: number;
+  minimum: number;
   exclusiveMinimum?: boolean;
   multipleOf?: number;
 }
@@ -38,7 +38,7 @@ interface IntPropsWithMaximum {
 }
 
 interface IntPropsWithBounds {
-  mininum: number;
+  minimum: number;
   maximum: number;
   exclusiveMinimum?: boolean;
   exclusiveMaximum?: boolean;
@@ -63,14 +63,14 @@ interface IntPropsWithExclusiveMaximum {
 }
 
 interface IntPropsWithExclusiveMaximumAndMinimum {
-  mininum: number;
+  minimum: number;
   exclusiveMinimum?: boolean;
   exclusiveMaximum: number;
   multipleOf?: number;
 }
 
 interface IntPropsWithExclusiveBounds {
-  mininum: number;
+  minimum: number;
   maximum: number;
   exclusiveMinimum: number;
   exclusiveMaximum: number;
@@ -88,7 +88,7 @@ type IntProps =
   | IntPropsWithExclusiveBounds;
 
 interface NumberProps {
-  mininum: number;
+  minimum: number;
   maximum: number;
 }
 
