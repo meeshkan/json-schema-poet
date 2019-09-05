@@ -85,7 +85,7 @@ test("type yields correct schema", () => {
   });
 });
 
-test("object can be extended", () => {
+test("object type can be extended", () => {
   const d = new Date();
   expect(
     jsp.object<Date>({
@@ -102,6 +102,32 @@ test("object can be extended", () => {
       bar: { type: "number" },
       baz: d
     }
+  });
+});
+
+const Unmock: unique symbol = Symbol();
+type Unmock = {
+  unmock?: typeof Unmock;
+};
+test("object type and base can be extended", () => {
+  const d = new Date();
+  const umk: Unmock = { unmock: Unmock };
+  expect(
+    jsp.object_<Date, Unmock>(umk)({
+      properties: {
+        foo: jsp.string_<Unmock>({})(),
+        bar: jsp.number_<Unmock>(umk)(),
+        baz: d
+      }
+    })
+  ).toEqual({
+    type: "object",
+    properties: {
+      foo: { type: "string" },
+      bar: { type: "number", unmock: Unmock },
+      baz: d
+    },
+    unmock: Unmock
   });
 });
 

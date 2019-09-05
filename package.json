@@ -1,6 +1,6 @@
 {
   "name": "json-schema-poet",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "license": "MIT",
   "devDependencies": {
@@ -14,7 +14,7 @@
   "dependencies": {
     "fp-ts": "^2.0.5",
     "io-ts": "^2.0.1",
-    "json-schema-strictly-typed": "^0.0.10"
+    "json-schema-strictly-typed": "^0.0.12"
   },
   "scripts": {
     "compile": "tsc",
