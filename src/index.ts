@@ -89,7 +89,7 @@ interface NumberProps {
   maximum: number;
 }
 
-interface ObjectProps<T, U> {
+interface ObjectProps<T, U extends object> {
   properties: Record<string, JSSTAnything<T, U>>;
   additionalProperties: boolean | JSSTAnything<T, U>;
   patternProperties: Record<string, JSSTAnything<T, U>>;
@@ -117,7 +117,7 @@ export const integer_ = <U extends object>(u: U) => (
 export const integer = integer_({});
 export const number_ = <U extends object>(u: U) => (
   props?: Partial<NumberProps>
-): JSSTNumber => ({
+): JSSTNumber<U> => ({
   type: "number",
   ...(props || {}),
   ...u
@@ -172,7 +172,7 @@ export const array_ = <T, U extends object>(u: U) => (
   items,
   ...u
 });
-export const array = <T>(items: JSSTAnything<T>) => array_({})(items);
+export const array = <T>(items: JSSTAnything<T, {}>) => array_({})(items);
 export const tuple_ = <T, U extends object>(u: U) => (
   items: JSSTAnything<T, U>[]
 ): JSSTTuple<T, U> => ({
@@ -180,14 +180,14 @@ export const tuple_ = <T, U extends object>(u: U) => (
   items,
   ...u
 });
-export const tuple = <T>(items: JSSTAnything<T>[]) => tuple_({})(items);
+export const tuple = <T>(items: JSSTAnything<T, {}>[]) => tuple_({})(items);
 export const allOf_ = <T, U extends object>(u: U) => (
   allOf: JSSTAnything<T, U>[]
 ): JSSTAllOf<T, U> => ({
   allOf,
   ...u
 });
-export const allOf = <T>(allOf: JSSTAnything<T>[]) => allOf_({})(allOf);
+export const allOf = <T>(allOf: JSSTAnything<T, {}>[]) => allOf_({})(allOf);
 
 export const anyOf_ = <T, U extends object>(u: U) => (
   anyOf: JSSTAnything<T, U>[]
@@ -195,22 +195,23 @@ export const anyOf_ = <T, U extends object>(u: U) => (
   anyOf,
   ...u
 });
-export const anyOf = <T>(anyOf: JSSTAnything<T>[]) => anyOf_({})(anyOf);
+export const anyOf = <T>(anyOf: JSSTAnything<T, {}>[]) => anyOf_({})(anyOf);
 export const oneOf_ = <T, U extends object>(u: U) => (
   oneOf: JSSTAnything<T, U>[]
 ): JSSTOneOf<T, U> => ({
   oneOf,
   ...u
 });
-export const oneOf = <T>(oneOf: JSSTAnything<T>[]) => oneOf_({})(oneOf);
+export const oneOf = <T>(oneOf: JSSTAnything<T, {}>[]) => oneOf_({})(oneOf);
 export const not_ = <T, U extends object>(u: U) => (
   not: JSSTAnything<T, U>
 ): JSSTNot<T, U> => ({ not, ...u });
-export const not = <T>(not: JSSTAnything<T>) => not_({})(not);
+export const not = <T>(not: JSSTAnything<T, {}>) => not_({})(not);
 export const dictionary_ = <T, U extends object>(u: U) => (
   vals: JSSTAnything<T, U>
 ): JSSTObject<T, U> => object_<T, U>(u)({ additionalProperties: vals });
-export const dictionary = <T>(vals: JSSTAnything<T>) => dictionary_({})(vals);
+export const dictionary = <T>(vals: JSSTAnything<T, {}>) =>
+  dictionary_({})(vals);
 export const type_ = <T, U extends object>(u: U) => (
   req: Record<string, JSSTAnything<T, U>>,
   opt: Record<string, JSSTAnything<T, U>>
@@ -220,8 +221,8 @@ export const type_ = <T, U extends object>(u: U) => (
     required: Object.keys(req)
   });
 export const type = <T>(
-  req: Record<string, JSSTAnything<T>>,
-  opt: Record<string, JSSTAnything<T>>
+  req: Record<string, JSSTAnything<T, {}>>,
+  opt: Record<string, JSSTAnything<T, {}>>
 ) => type_({})(req, opt);
 
 export const object_ = <T, U extends object>(u: U) => (

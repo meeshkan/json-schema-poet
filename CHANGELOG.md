@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# `v0.0.3`
+
+* Exposes more of the generic interface.
+
 # `v0.0.2`
 
 * Implements generic extension for all types.
