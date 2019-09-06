@@ -73,7 +73,7 @@ export interface IntPropsWithExclusiveBounds {
   multipleOf?: number;
 }
 
-type IntProps =
+export type IntProps =
   | IntPropsWithMinimum
   | IntPropsWithMaximum
   | IntPropsWithBounds
