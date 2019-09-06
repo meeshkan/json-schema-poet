@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# `v0.0.4`
+
+* Upgrades `json-schema-strictly-typed`.
+
 # `v0.0.3`
 
 * Exposes more of the generic interface.
