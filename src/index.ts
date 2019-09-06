@@ -261,3 +261,27 @@ export const extend = <T, U extends object>(
   key: string,
   v: JSONValue
 ): JSONSchemaObject<T, U> => <JSONSchemaObject<T, U>>{ ...what, [key]: v };
+
+export const extendT = <T, U extends object>(u: U) => ({
+  nul: nul_(u),
+  cnst: cnst_(u),
+  integer: integer_(u),
+  number: number_(u),
+  string: string_(u),
+  stringEnum: stringEnum_(u),
+  numberEnum: numberEnum_(u),
+  integerEnum: integerEnum_(u),
+  regex: regex_(u),
+  boolean: boolean_(u),
+  array: array_<T, U>(u),
+  tuple: tuple_<T, U>(u),
+  allOf: allOf_<T, U>(u),
+  anyOf: anyOf_<T, U>(u),
+  oneOf: oneOf_<T, U>(u),
+  not: not_<T, U>(u),
+  dictionary: dictionary_<T, U>(u),
+  type: type_<T, U>(u),
+  object: object_<T, U>(u),
+  extend: (what: JSSTAnything<T, U>, key: string, v: JSONValue) =>
+    extend(what, key, v)
+});

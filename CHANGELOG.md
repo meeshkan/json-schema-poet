@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# `v0.0.5`
+
+* Utility function for extension type.
+
 # `v0.0.4`
 
 * Upgrades `json-schema-strictly-typed`.
