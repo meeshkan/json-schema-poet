@@ -1,7 +1,14 @@
 import * as jsp from "../src";
-
+import * as t from "io-ts";
 test("number yields number schema", () => {
   expect(jsp.number()).toEqual({ type: "number" });
+});
+
+test("extendT works", () => {
+  expect(jsp.extendT({ hello: "world" }).integer()).toEqual({
+    type: "integer",
+    hello: "world"
+  });
 });
 
 test("null yields null schema", () => {
