@@ -20,21 +20,20 @@ import {
   JSSTTuple,
   JSSTList
 } from "json-schema-strictly-typed";
-import * as io from "io-ts";
 
-interface IntPropsWithMinimum {
+export interface IntPropsWithMinimum {
   minimum: number;
   exclusiveMinimum?: boolean;
   multipleOf?: number;
 }
 
-interface IntPropsWithMaximum {
+export interface IntPropsWithMaximum {
   maximum: number;
   exclusiveMaximum?: boolean;
   multipleOf?: number;
 }
 
-interface IntPropsWithBounds {
+export interface IntPropsWithBounds {
   minimum: number;
   maximum: number;
   exclusiveMinimum?: boolean;
@@ -42,31 +41,31 @@ interface IntPropsWithBounds {
   multipleOf?: number;
 }
 
-interface IntPropsWithExclusiveMinimum {
+export interface IntPropsWithExclusiveMinimum {
   exclusiveMinimum: number;
   multipleOf?: number;
 }
 
-interface IntPropsWithExclusiveMinimumAndMaximum {
+export interface IntPropsWithExclusiveMinimumAndMaximum {
   maximum: number;
   exclusiveMinimum: number;
   exclusiveMaximum?: boolean;
   multipleOf?: number;
 }
 
-interface IntPropsWithExclusiveMaximum {
+export interface IntPropsWithExclusiveMaximum {
   exclusiveMaximum: number;
   multipleOf?: number;
 }
 
-interface IntPropsWithExclusiveMaximumAndMinimum {
+export interface IntPropsWithExclusiveMaximumAndMinimum {
   minimum: number;
   exclusiveMinimum?: boolean;
   exclusiveMaximum: number;
   multipleOf?: number;
 }
 
-interface IntPropsWithExclusiveBounds {
+export interface IntPropsWithExclusiveBounds {
   minimum: number;
   maximum: number;
   exclusiveMinimum: number;
@@ -84,12 +83,12 @@ type IntProps =
   | IntPropsWithExclusiveMaximumAndMinimum
   | IntPropsWithExclusiveBounds;
 
-interface NumberProps {
+export interface NumberProps {
   minimum: number;
   maximum: number;
 }
 
-interface ObjectProps<T, U extends object> {
+export interface ObjectProps<T, U extends object> {
   properties: Record<string, JSSTAnything<T, U>>;
   additionalProperties: boolean | JSSTAnything<T, U>;
   patternProperties: Record<string, JSSTAnything<T, U>>;

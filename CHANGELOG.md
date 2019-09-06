@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# `v0.0.6`
+
+* Exports all interfaces
+
 # `v0.0.5`
 
 * Utility function for extension type.
