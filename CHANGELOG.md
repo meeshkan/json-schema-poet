@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# `v0.0.7`
+
+* Adds reference and top-level.
+
 # `v0.0.6`
 
 * Exports all interfaces

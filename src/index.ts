@@ -18,7 +18,10 @@ import {
   JSSTAnything,
   JSONValue,
   JSSTTuple,
-  JSSTList
+  JSSTList,
+  JSSTReference,
+  JSSTTopLevel,
+  JSSTGenericTopLevel
 } from "json-schema-strictly-typed";
 
 export interface IntPropsWithMinimum {
@@ -151,6 +154,13 @@ export const integerEnum_ = <U extends object>(u: U) => (
   ...u
 });
 export const integerEnum = integerEnum_({});
+export const $ref_ = <U extends object>(u: U) => (
+  $ref: string
+): JSSTReference<U> => ({
+  $ref,
+  ...u
+});
+export const $ref = $ref_({});
 export const regex_ = <U extends object>(u: U) => (
   pattern: string
 ): JSSTRegex<U> => ({
@@ -255,12 +265,16 @@ export const object_ = <T, U extends object>(u: U) => (
 });
 export const object = <T>(props?: Partial<ObjectProps<T, {}>>) =>
   object_({})(props);
+export const top = <T, U extends object, M extends JSSTAnything<T,U>>(anything: M, props?: JSSTTopLevel<T,U>): JSONSchemaObject<T,U> =>
+  ({
+    ...anything,
+    ...props
+  });
 export const extend = <T, U extends object>(
   what: JSSTAnything<T, U>,
   key: string,
   v: JSONValue
 ): JSONSchemaObject<T, U> => <JSONSchemaObject<T, U>>{ ...what, [key]: v };
-
 export const extendT = <T, U extends object>(u: U) => ({
   nul: nul_(u),
   cnst: cnst_(u),
@@ -272,6 +286,7 @@ export const extendT = <T, U extends object>(u: U) => ({
   integerEnum: integerEnum_(u),
   regex: regex_(u),
   boolean: boolean_(u),
+  $ref: $ref_(u),
   array: array_<T, U>(u),
   tuple: tuple_<T, U>(u),
   allOf: allOf_<T, U>(u),
@@ -281,6 +296,6 @@ export const extendT = <T, U extends object>(u: U) => ({
   dictionary: dictionary_<T, U>(u),
   type: type_<T, U>(u),
   object: object_<T, U>(u),
-  extend: (what: JSSTAnything<T, U>, key: string, v: JSONValue) =>
-    extend(what, key, v)
+  top,
+  extend
 });

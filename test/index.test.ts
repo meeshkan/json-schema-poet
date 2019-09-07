@@ -11,6 +11,19 @@ test("extendT works", () => {
   });
 });
 
+test("top yields top level", () => {
+  expect(jsp.top(jsp.number(), { $id: "foo" })).toEqual({
+    $id: "foo",
+    type: "number"
+  });
+});
+
+test("$ref yields a reference", () => {
+  expect(jsp.$ref("#/definitions/foo")).toEqual({
+    $ref: "#/definitions/foo"
+  });
+});
+
 test("null yields null schema", () => {
   expect(jsp.nul()).toEqual({ type: "null" });
 });
