@@ -4,6 +4,13 @@ test("number yields number schema", () => {
   expect(jsp.number()).toEqual({ type: "number" });
 });
 
+test("number enum yields numberEnum schema", () => {
+  expect(jsp.numberEnum([1, 2, 3])).toEqual({
+    type: "number",
+    enum: [1, 2, 3]
+  });
+});
+
 test("null yields null schema", () => {
   expect(jsp.nul()).toEqual({ type: "null" });
 });
