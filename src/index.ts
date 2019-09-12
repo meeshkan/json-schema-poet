@@ -127,7 +127,9 @@ export const number_ = <U extends object>(u: U) => (
   ...u
 });
 export const number = number_({});
-export const string_ = <U extends object>(u: U) => (faker?: JSSTFaker): JSSTSimpleString<U> => ({
+export const string_ = <U extends object>(u: U) => (
+  faker?: JSSTFaker
+): JSSTSimpleString<U> => ({
   type: "string",
   faker,
   ...u
@@ -268,11 +270,13 @@ export const object_ = <T, U extends object>(u: U) => (
 });
 export const object = <T>(props?: Partial<ObjectProps<T, {}>>) =>
   object_({})(props);
-export const top = <T, U extends object, M extends JSSTAnything<T,U>>(anything: M, props?: JSSTTopLevel<T,U>): JSONSchemaObject<T,U> =>
-  ({
-    ...anything,
-    ...props
-  });
+export const top = <T, U extends object, M extends JSSTAnything<T, U>>(
+  anything: M,
+  props?: JSSTTopLevel<T, U>
+): JSONSchemaObject<T, U> => ({
+  ...anything,
+  ...props
+});
 export const extend = <T, U extends object>(
   what: JSSTAnything<T, U>,
   key: string,
