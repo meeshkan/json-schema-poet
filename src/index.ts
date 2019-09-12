@@ -21,7 +21,9 @@ import {
   JSSTList,
   JSSTReference,
   JSSTTopLevel,
-  JSSTGenericTopLevel
+  JSSTGenericTopLevel,
+  JSSTFaker,
+  JSSTSimpleString
 } from "json-schema-strictly-typed";
 
 export interface IntPropsWithMinimum {
@@ -125,8 +127,9 @@ export const number_ = <U extends object>(u: U) => (
   ...u
 });
 export const number = number_({});
-export const string_ = <U extends object>(u: U) => (): JSSTString<U> => ({
+export const string_ = <U extends object>(u: U) => (faker?: JSSTFaker): JSSTSimpleString<U> => ({
   type: "string",
+  faker,
   ...u
 });
 export const string = string_({});

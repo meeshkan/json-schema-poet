@@ -39,6 +39,10 @@ test("string yields string schema", () => {
   expect(jsp.string()).toEqual({ type: "string" });
 });
 
+test("string with faker yields string schema", () => {
+  expect(jsp.string("name.findName")).toEqual({ type: "string", faker: "name.findName" });
+});
+
 test("boolean yields boolean schema", () => {
   expect(jsp.boolean()).toEqual({ type: "boolean" });
 });

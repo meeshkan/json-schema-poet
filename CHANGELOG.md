@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# `v0.0.8`
+
+* Adds optional faker parameter to string
+
 # `v0.0.7`
 
 * Adds reference and top-level.
