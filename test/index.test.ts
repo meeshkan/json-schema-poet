@@ -1,5 +1,5 @@
 import * as jsp from "../src";
-
+import * as t from "io-ts";
 test("number yields number schema", () => {
   expect(jsp.number()).toEqual({ type: "number" });
 });
@@ -8,6 +8,26 @@ test("number enum yields numberEnum schema", () => {
   expect(jsp.numberEnum([1, 2, 3])).toEqual({
     type: "number",
     enum: [1, 2, 3]
+  });
+});
+
+test("extendT works", () => {
+  expect(jsp.extendT({ hello: "world" }).integer()).toEqual({
+    type: "integer",
+    hello: "world"
+  });
+});
+
+test("top yields top level", () => {
+  expect(jsp.top(jsp.number(), { $id: "foo" })).toEqual({
+    $id: "foo",
+    type: "number"
+  });
+});
+
+test("$ref yields a reference", () => {
+  expect(jsp.$ref("#/definitions/foo")).toEqual({
+    $ref: "#/definitions/foo"
   });
 });
 
@@ -24,6 +44,13 @@ test("integer yields number schema", () => {
 
 test("string yields string schema", () => {
   expect(jsp.string()).toEqual({ type: "string" });
+});
+
+test("string with faker yields string schema", () => {
+  expect(jsp.string("name.findName")).toEqual({
+    type: "string",
+    faker: "name.findName"
+  });
 });
 
 test("boolean yields boolean schema", () => {
@@ -92,7 +119,7 @@ test("type yields correct schema", () => {
   });
 });
 
-test("object can be extended", () => {
+test("object type can be extended", () => {
   const d = new Date();
   expect(
     jsp.object<Date>({
@@ -109,6 +136,32 @@ test("object can be extended", () => {
       bar: { type: "number" },
       baz: d
     }
+  });
+});
+
+const Unmock: unique symbol = Symbol();
+type Unmock = {
+  unmock?: typeof Unmock;
+};
+test("object type and base can be extended", () => {
+  const d = new Date();
+  const umk: Unmock = { unmock: Unmock };
+  expect(
+    jsp.object_<Date, Unmock>(umk)({
+      properties: {
+        foo: jsp.string_<Unmock>({})(),
+        bar: jsp.number_<Unmock>(umk)(),
+        baz: d
+      }
+    })
+  ).toEqual({
+    type: "object",
+    properties: {
+      foo: { type: "string" },
+      bar: { type: "number", unmock: Unmock },
+      baz: d
+    },
+    unmock: Unmock
   });
 });
 
