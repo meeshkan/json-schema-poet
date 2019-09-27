@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# `v0.0.9`
+
+* Adds faker support.
+
 # `v0.0.8`
 
 * Adds optional faker parameter to string
