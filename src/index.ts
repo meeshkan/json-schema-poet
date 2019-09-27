@@ -1,7 +1,6 @@
 import {
   JSSTInteger,
   JSSTNumber,
-  JSSTString,
   JSSTRegex,
   JSSTBoolean,
   JSSTObject,
@@ -21,7 +20,6 @@ import {
   JSSTList,
   JSSTReference,
   JSSTTopLevel,
-  JSSTGenericTopLevel,
   JSSTFaker,
   JSSTSimpleString
 } from "json-schema-strictly-typed";
