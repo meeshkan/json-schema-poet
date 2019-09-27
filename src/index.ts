@@ -131,7 +131,7 @@ export const string_ = <U extends object>(u: U) => (
   faker?: JSSTFaker
 ): JSSTSimpleString<U> => ({
   type: "string",
-  faker,
+  ...(faker !== undefined ? { faker } : {}),
   ...u
 });
 export const string = string_({});
