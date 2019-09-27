@@ -1,7 +1,6 @@
 import {
   JSSTInteger,
   JSSTNumber,
-  JSSTString,
   JSSTRegex,
   JSSTBoolean,
   JSSTObject,
@@ -21,7 +20,6 @@ import {
   JSSTList,
   JSSTReference,
   JSSTTopLevel,
-  JSSTGenericTopLevel,
   JSSTFaker,
   JSSTSimpleString
 } from "json-schema-strictly-typed";
@@ -131,7 +129,7 @@ export const string_ = <U extends object>(u: U) => (
   faker?: JSSTFaker
 ): JSSTSimpleString<U> => ({
   type: "string",
-  faker,
+  ...(faker !== undefined ? { faker } : {}),
   ...u
 });
 export const string = string_({});
