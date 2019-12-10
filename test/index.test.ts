@@ -57,6 +57,13 @@ test("boolean yields boolean schema", () => {
   expect(jsp.boolean()).toEqual({ type: "boolean" });
 });
 
+test("string enum yields string enum schema", () => {
+  expect(jsp.stringEnum(["tornado", "hemoglobin", "pizza"])).toEqual({
+    type: "string",
+    enum: ["tornado", "hemoglobin", "pizza"]
+  });
+});
+
 test("array yields array schema", () => {
   expect(jsp.array(jsp.string())).toEqual({
     type: "array",
