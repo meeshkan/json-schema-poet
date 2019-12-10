@@ -6,6 +6,14 @@ Typescript is a useful way to verify the types of JavaScript objects.
 
 `json-schema-strictly-poet` Write JSON Schema like you'd write poetry.
 
+## Installation
+
+[JSON Schema](https://json-schema.org) can be installed as a package from ***npm registry***.
+
+```
+  npm install --save json-schema-poet
+```
+
 ## Example
 
 ```typescript
