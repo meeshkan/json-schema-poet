@@ -49,8 +49,8 @@ Here are all of the functions in the API.
 * `object()`
 * `extend()`
 
-## Todo
+## Contributing
 
-There is plenty of stuff that is not implemented yet.  I'd really appreciate your help!
+Thanks for wanting to contribute! We will soon have a contributing page detaling how to contribute. Meanwhile, feel free to star this repository, [open issues](https://github.com/unmock/json-schema-poet/issues) and ask for more features and support.
 
 Please note that this project is governed by the [Unmock Community Code of Conduct](https://github.com/unmock/code-of-conduct). By participating in this project, you agree to abide by its terms.
